@@ -1,32 +1,70 @@
-name: Build and Package Ragabology App
+name: Electron Build for macOS
 
-on: [push]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
     - uses: actions/checkout@v2
 
-    - name: Use Node.js
+    - name: Cache Node.js modules
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16'
+        node-version: '16.13.0'
 
-    - name: Install Dependencies
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install setuptools wheel
+
+    - name: Install npm dependencies
       run: npm install
 
-    - name: Build and Package App with Electron Forge
-      run: npm run make
+    - name: Rebuild native modules
+      run: npm run rebuild
 
-    # Assuming npm run make configures Electron Forge to create a macOS package.
-    # You might need to adjust this if you have a specific script for .pkg packaging.
-    # This could involve a custom Electron Forge maker configuration or an external tool.
+    - name: Package Electron app for macOS
+      run: npx electron-packager . --overwrite --platform=darwin --arch=arm64 --out=release-builds --prune=true
 
-    - name: Locate and Upload .pkg Artifact
-      if: success()
+    - name: Set executable flag
+      run: chmod +x release-builds/ragabology-darwin-arm64/ragabology.app/Contents/MacOS/'ragabology'
+
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Ragabology-pkg
-        # Update the path according to where your .pkg file is actually saved.
-        path: out/make/**/*.pkg
+        name: electron-app
+        path: release-builds/
+
+    - name: Create .pkg installer
+      run: |
+        pkgbuild --root release-builds/ragabology-darwin-arm64/ragabology.app \
+                --identifier com.tqbox.ragabology \
+                --version "1.0.0" \
+                --install-location /Applications/ragabology.app \
+                --sign "Developer ID Installer: Tqbox (Team ID)" \
+                ragabology-1.0.0.pkg
+
+    - name: Upload .pkg Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ragabology-pkg
+        path: ragabology-1.0.0.pkg
