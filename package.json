@@ -2,17 +2,15 @@
   "name": "ragabology",
   "version": "1.0.0",
   "type": "module",
-  "description": "Education application for biology/medical students",
+  "description": "education application for biology/medical students",
   "main": "index.js",
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
-    "make": "electron-forge make",
-    "package-mac": "electron-packager . --platform=darwin --arch=x64 --out=dist/ --icon=assets/icons/mac/icon.icns",
-    "postpackage-mac": "electron-installer-dmg ./dist/ragabology-darwin-x64/ragabology.app Ragabology"
+    "make": "electron-forge make"
   },
-  "author": "Techbox Education",
+  "author": "Technox Education",
   "license": "ISC",
   "devDependencies": {
     "@electron-forge/cli": "^7.2.0",
@@ -22,12 +20,20 @@
     "@electron-forge/maker-zip": "^7.2.0",
     "@electron-forge/maker-dmg": "^7.2.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
-    "electron": "^16.0.0",
+    "electron": "28.2.1",
+    "electron-forge": "^5.2.4",
     "electron-rebuild": "^3.2.9"
   },
-  
   "dependencies": {
     "axios": "^1.6.7",
-    "electron-squirrel-startup": "^1.0.0"
+    "bindings": "^1.5.0",
+    "child_process": "^1.0.2",
+    "dialog": "^0.3.1",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-winstaller": "^5.2.1",
+    "ffi-napi": "^4.0.3",
+    "is-elevated": "^4.0.0",
+    "pkgbuild": "^0.0.4",
+    "png-to-ico": "^2.1.8"
   }
 }
