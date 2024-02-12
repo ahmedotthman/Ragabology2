@@ -38,7 +38,7 @@ async function createWindow() {
         icon: path.join(__dirname, 'build/app_icon.png') // Adjusted the icon format for macOS compatibility
     });
 
-    win.loadURL('https://ragaboloy.tq-box.com/login/');
+    win.loadURL('https://ragabology.tq-box.com/login');
     win.webContents.on('devtools-opened', () => { win.webContents.closeDevTools(); });
     win.on('page-title-updated', evt => { evt.preventDefault(); });
     const recordingSoftwareList = await fetchRecordingSoftwareList();
