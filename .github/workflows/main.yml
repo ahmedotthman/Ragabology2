@@ -60,7 +60,7 @@ jobs:
                  --identifier com.tqbox.ragabology \
                  --version "1.0.0" \
                  --install-location /Applications/ragabology.app \
-                 out/ragabology-1.0.0.pkg
+                 dist/ragabology-1.0.0.pkg
 
     - name: Upload .pkg Artifact
       uses: actions/upload-artifact@v2
