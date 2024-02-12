@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your App</title>
+  <!-- Add your CSS for styling -->
+</head>
+<body>
+  <!-- Your app content -->
+  <div id="overlay" style="display: none;">
+    <p>DETECTED: THE APP WILL DESTROY ITSELF IN 30 SECONDS</p>
+    <button id="closeNow">Close Now</button>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+    
+    ipcRenderer.on('show-overlay', () => {
+      document.getElementById('overlay').style.display = 'block';
+    });
+
+    document.getElementById('closeNow').addEventListener('click', () => {
+      ipcRenderer.send('close-app');
+    });
+  </script>
+</body>
+</html>
+
