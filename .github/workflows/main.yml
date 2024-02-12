@@ -25,46 +25,28 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16.13.0'
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install setuptools wheel
+        cache: 'npm'
 
     - name: Install npm dependencies
       run: npm install
 
-    - name: Rebuild native modules
-      run: npm run rebuild
+    # Only include the rebuild step if you have native modules and a corresponding script
+    # - name: Rebuild native modules
+    #   run: npm run rebuild
 
     - name: Package Electron app for macOS
-      run: npx electron-packager . --overwrite --platform=darwin --arch=arm64 --out=release-builds --prune=true
-
-    - name: Set executable flag
-      run: chmod +x release-builds/ragabology-darwin-arm64/ragabology.app/Contents/MacOS/'ragabology'
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: electron-app
-        path: release-builds/
+      run: npx electron-packager . ragabology --overwrite --platform=darwin --arch=arm64 --out=release-builds --prune=true --icon=assets/icons/mac/icon.icns
 
     - name: Create .pkg installer
       run: |
         pkgbuild --root release-builds/ragabology-darwin-arm64/ragabology.app \
-                --identifier com.tqbox.ragabology \
-                --version "1.0.0" \
-                --install-location /Applications/ragabology.app \
-                --sign "Developer ID Installer: Tqbox (Team ID)" \
-                ragabology-1.0.0.pkg
+                 --identifier com.tqbox.ragabology \
+                 --version "1.0.0" \
+                 --install-location /Applications/ragabology.app \
+                 ragabology-1.0.0.pkg
 
     - name: Upload .pkg Artifact
       uses: actions/upload-artifact@v2
       with:
         name: ragabology-pkg
-        path: ragabology-1.0.0.pkg
+        path: ./ragabology-1.0.0.pkg
