@@ -66,5 +66,5 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ragabology-pkg
-        path: ragabology-1.0.0.pkg
+        path: dist/ragabology-1.0.0.pkg
 
