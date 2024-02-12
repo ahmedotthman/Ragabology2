@@ -43,27 +43,28 @@ jobs:
       run: npm run rebuild
 
     - name: Package Electron app for macOS
-      run: npx electron-packager . ragabology --overwrite --platform=darwin --arch=arm64 --out=release-builds --prune=true
+      run: npx electron-packager . --overwrite --platform=darwin --arch=arm64 --out=dist/ --prune=true
 
     - name: Set executable flag
-      run: chmod +x release-builds/ragabology-darwin-arm64/ragabology.app/Contents/MacOS/ragabology
+      run: chmod +x dist/ragabology-darwin-arm64/ragabology.app/Contents/MacOS/'ragabology'
 
-    - name: Create .pkg installer
-      run: |
-        pkgbuild --root release-builds/ragabology-darwin-arm64/ragabology.app \
-                 --identifier com.tqbox.ragabology \
-                 --version "1.0.0" \
-                 --install-location /Applications/ragabology.app \
-                 release-builds/ragabology-1.0.0.pkg
-
-    - name: Upload Electron app Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: electron-app
-        path: release-builds/
+        path: out/
+
+    - name: Create .pkg installer
+      run: |
+        pkgbuild --root dist/ragabology-darwin-arm64/ragabology.app \
+                 --identifier com.tqbox.ragabology \
+                 --version "1.0.0" \
+                 --install-location /Applications/ragabology.app \
+                 out/ragabology-1.0.0.pkg
 
     - name: Upload .pkg Artifact
       uses: actions/upload-artifact@v2
       with:
         name: ragabology-pkg
-        path: release-builds/ragabology-1.0.0.pkg
+        path: ragabology-1.0.0.pkg
+
