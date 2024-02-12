@@ -1,0 +1,30 @@
+name: Build and Package Ragabology App
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14'
+    - name: Install Dependencies
+      run: npm install
+    - name: Build and Package App
+      run: npm run build
+    - name: Package Electron App as .pkg
+      run: |
+        npm run package-mac
+        pkgbuild --root dist/Ragabology-darwin-x64/Ragabology.app \
+                 --identifier com.yourcompany.ragabology \
+                 --install-location /Applications/Ragabology.app \
+                 --version "1.0.0" \
+                 Ragabology-1.0.0.pkg
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Ragabology-pkg
+        path: Ragabology-1.0.0.pkg
