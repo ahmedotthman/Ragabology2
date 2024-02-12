@@ -13,40 +13,28 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16.13.0'
+        node-version: '16'
         cache: 'npm'
 
     - name: Install npm dependencies
       run: npm install
 
-    # Only include the rebuild step if you have native modules and a corresponding script
-    # - name: Rebuild native modules
-    #   run: npm run rebuild
-
     - name: Package Electron app for macOS
-      run: npx electron-packager . ragabology --overwrite --platform=darwin --arch=arm64 --out=release-builds --prune=true --icon=assets/icons/mac/icon.icns
+      run: npx electron-packager . ragabology --overwrite --platform=darwin --arch=arm64 --out=out --prune=true
 
     - name: Create .pkg installer
       run: |
-        pkgbuild --root release-builds/ragabology-darwin-arm64/ragabology.app \
+        pkgbuild --root out/ragabology-darwin-arm64/ragabology.app \
                  --identifier com.tqbox.ragabology \
                  --version "1.0.0" \
                  --install-location /Applications/ragabology.app \
-                 ragabology-1.0.0.pkg
+                 out/ragabology-1.0.0.pkg
 
-    - name: Upload .pkg Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ragabology-pkg
-        path: ./ragabology-1.0.0.pkg
+        name: ragabology-builds
+        path: out/
