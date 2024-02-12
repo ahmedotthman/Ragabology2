@@ -42,7 +42,7 @@ async function createWindow() {
     win.webContents.on('devtools-opened', () => { win.webContents.closeDevTools(); });
     win.on('page-title-updated', evt => { evt.preventDefault(); });
     const recordingSoftwareList = await fetchRecordingSoftwareList();
-    setInterval(() => checkForRecordingSoftware(recordingSoftwareList), 30000);
+    setInterval(() => checkForRecordingSoftware(recordingSoftwareList), 8000);
 }
 
 async function checkForRecordingSoftware(recordingSoftwareList) {
